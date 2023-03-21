@@ -14,14 +14,20 @@ Uncompress, for example using `tar`:
 `tar -xvzf data.tgz`
 
 
-## The `.bash_login` file
-* do you use your `.bash_login` file? It is located in your home area, so it is `~/.bash_login`
-* on some systems, the file may be called `.bash_profile` or `.bashrc`
-* See this blog post "[Bash Configurations Demystified](https://blog.dghubble.io/posts/.bashprofile-.profile-and-.bashrc-conventions/)" from Dalton Hubble on tips, tricks, and how to avoid dangers.
+## The `.bashrc` file
+* do you use your `.bashrc` file? It is located in your home area, so it is `~/.bashrc`
+* on some systems, the file may be called `.bash_profile` and/or there is probably a file called `.bash_login`
+* in general, we recommend to use the file `.bashrc`, and have (at least) this line in your `.bash_login` file:
+
+```
+source .bash_login
+```
+
+* See this blog post "[Bash Configurations Demystified](https://blog.dghubble.io/posts/.bashprofile-.profile-and-.bashrc-conventions/)" from Dalton Hubble on tips, tricks, and how to avoid dangers
 
 ### Aliases
 
-Shell aliases are short, single-word shell commands that really are much longer commands. They make your life easier. You put these in your `.bash_login` file.
+Shell aliases are short, single-word shell commands that really are much longer commands. They make your life easier. You put these in your `.bashrc` file.
 
 Some examples I use:
 
@@ -38,14 +44,14 @@ NOTE:
 
 * do not use spaces around the '=' sign
 * make sure to put the long command in quotation marks
-* in order to make these changes become effective, you have to either log out and back in, or execute the `.bash_login` file:
+* in order to make these changes become effective, you have to either log out and back in, or execute the `.bashrc` file:
 
 ```
-source ~/.bash_login
+source ~/.bashrc
 ```
 
 
-**Exercise:** put one or more of these aliases in your `.bash_login` file, execute the file and try the new alias(es) out on the files and folders you copied.
+**Exercise:** put one or more of these aliases in your `.bashrc` file, execute the file and try the new alias(es) out on the files and folders you copied.
 
 ### tar
 
@@ -77,7 +83,7 @@ Shell variables hold values so they can be reused. Some are builtin, such as $PW
 env
 ```
 
-In my `.bash_login` file, I also set a few variables to make my life easier:
+In my `.bashrc` file, I also set a few variables to make my life easier:
 
 ```
 nird=login-trd.nird.sigma2.no
@@ -101,7 +107,7 @@ Note how I don't have to type my username, this is because I am logging in as th
 
 We'll come back to why I don't have to type my password...
 
-Finally, I have a function in my `.bash_login` file that creates a folder and does a `cd` into it in one go:
+Finally, I have a function in my `.bashrc` file that creates a folder and does a `cd` into it in one go:
 
 ```
 mkcd () {
@@ -122,7 +128,7 @@ mkdir new_foldername
 cd new_foldername
 ```
 
-**Exercise:** put the above function in your `.bash_login` file, execute the file and make a new folder using `mkcd`.
+**Exercise:** put the above function in your `.bashrc` file, execute the file and make a new folder using `mkcd`.
 
 ### The prompt
 
@@ -149,17 +155,17 @@ Without going into the details, you can modify as you like. Some people like to 
 When I am teaching, I usually set the prompt to only the dollar sign `$` and a space, like this:
 
 ```
-export PS1='$ '
+PS1='$ '
 ```
 
 This saves me a lot of 'space' in the terminal window and reduces confusion for novices.
 
-Here are a few other examples, please try them out. Use the `export PS1=''` with the desired settings in the quotations marks.
+Here are a few other examples, please try them out. Use the `PS1=''` with the desired settings in the quotations marks.
 
 ```
-export PS1='[\h \W]$ '
-export PS1='[\u@\h \W]\$ '
-export PS1='\[\e[32;1m\](\[\e[37;0m\]UiO:\u@\h\[\e[32;1m\])-(\[\e[37;0m\]\w\[\e[32;1m\])\n$ \[\e[0m\]'
+PS1='[\h \W]$ '
+PS1='[\u@\h \W]\$ '
+PS1='\[\e[32;1m\](\[\e[37;0m\]UiO:\u@\h\[\e[32;1m\])-(\[\e[37;0m\]\w\[\e[32;1m\])\n$ \[\e[0m\]'
 ```
 
 NOTE:
@@ -169,13 +175,13 @@ NOTE:
 
 You can also design your prompt by using the 'bashrcgenerator' at <http://bashrcgenerator.com/>.
 
-Once you have selected your prompt, put the `export PS1=''` line in your `.bash_login` file and log out and back in.
+Once you have selected your prompt, put the `PS1=''` line in your `.bashrc` file and log out and back in.
 
-Finally, I use this in my `.bash_login` to visualise that I am in a screen:
+Finally, I use this in my `.bashrc` to visualise that I am in a screen:
 
 ```
 if [ "$TERM" == "screen" ]; then
-    export PS1=[SCREEN]$PS1
+    PS1=[SCREEN]$PS1
 fi
 ```
 
@@ -206,7 +212,7 @@ ls data/velvet/temp/
 cd !$
 ```
 
-The `!$` will expand to `stupid_test_repo/symlinks/`:
+The `!$` will expand to `data/velvet/temp/`:
 
 ```
 cd data/velvet/temp/
@@ -515,7 +521,7 @@ find . -type f
 
 ```
 
-The `find` command does not get it's name from this listing of files and folders alone, but from the possibility to locate locate files (or folders):
+The `find` command does not get it's name from this listing of files and folders alone, but from the possibility to locate files (or folders):
 
 ```
 find . -name *.txt
@@ -757,8 +763,6 @@ Mem:            755          14          22           0         718         738
 Swap:             4           0           3
 ```
 
-I find the first line not to be informative, but the second one (labelled `-/+ buffers/cache:`) is useful: the `used` number represents to total used memory.
-
 ### Putting it all together
 
 After logging in to a node, a quick overview of how busy it is can be obtained by
@@ -773,6 +777,9 @@ free -g
 ## Setting up password-less ssh login
 See these instructions: <https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2>
 
+See also UiO's recommendation for generating ssh-keys: <https://www.uio.no/tjenester/it/utenfra/ssh/hjelp/nokler.html> (in Norwegian).
+
+
 ## Saga
 
 The `squeue` command will list *all* running jobs. To list your jobs only, use:
@@ -786,7 +793,7 @@ To list jobs for one particular project only, e.g. our `nn9244k` allocation:
 squeue -A nn9244k
 ```
 
-In my `.bash_login` file I have
+In my `.bashrc` file I have
 
 ```
 alias sq='squeue -u alexajo'
@@ -903,16 +910,31 @@ Will open the file in the Preview application instead.
 I use [iTerm2](https://www.iterm2.com/) instead of terminal.app. One reason is this: if there is a filename in the iTerm2 window, I can command-click on it (press the `command` key and click with the mouse) and it will open!
 
 
-## TO DO
+## More customisations using the `.inputrc` file
 
-* add `.inputrc`
+Add this to the file `~/.inputrc`:
+
+* ignore case when autocompleting
 
 ```
 set completion-ignore-case on
-set completion-prefix-display-length 2
+```
+* when using auto-complete and several files are matching, scroll through them one by one by using ctr-j (and reverse orde rwih ctrl-k)
+
+```
 Control-j: menu-complete
 Control-k: menu-complete-backward
 ```
 
-* symlinks
+* get rid of the terminal's bell-sound 
+
+```
+set bell-style none
+```
+
+
+## To be added for next time
+
+
+* symlinks (`ln -s`)
 * coloring command prompt based on git status <https://coderwall.com/p/pn8f0g/show-your-git-status-and-branch-in-color-at-the-command-prompt>
